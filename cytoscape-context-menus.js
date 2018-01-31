@@ -3,9 +3,9 @@
   var $ = typeof jQuery === typeof undefined ? null : jQuery;
 
   var register = function( cytoscape, $ ){
-    
+
     if( !cytoscape ){ return; } // can't register if cytoscape unspecified
-    
+
     var defaults = {
       // List of initial menu items
       menuItems: [
@@ -40,23 +40,23 @@
         // add class names to this list
       ]
     };
-    
+
     var eventCyTapStart; // The event to be binded on tap start
-    
+
     // To initialize with options.
     cytoscape('core', 'contextMenus', function (opts) {
       var cy = this;
-      
+
       // Initilize scratch pad
       if (!cy.scratch('cycontextmenus')) {
         cy.scratch('cycontextmenus', {});
       }
-      
+
       var options = getScratchProp('options');
       var $cxtMenu = getScratchProp('cxtMenu');
       var menuItemCSSClass = 'cy-context-menus-cxt-menuitem';
       var dividerCSSClass = 'cy-context-menus-divider';
-      
+
       // Merge default options with the ones coming from parameter
       function extend(defaults, options) {
         var obj = {};
@@ -75,7 +75,7 @@
       function getScratchProp(propname) {
         return cy.scratch('cycontextmenus')[propname];
       };
-      
+
       function setScratchProp(propname, value) {
         cy.scratch('cycontextmenus')[propname] = value;
       };
@@ -133,7 +133,7 @@
           onClickFcn(getScratchProp('currentCyEvent'));
         });
 
-        $component.data('call-on-click-function', callOnClickFcn); 
+        $component.data('call-on-click-function', callOnClickFcn);
       }
 
       function bindCyCxttap($component, selector, coreAsWell) {
@@ -158,9 +158,14 @@
 
         var cxtfcn;
         var cxtCoreFcn;
+        var cxtMenuEventActivator = 'cxttap';
+
+        if (options.leftClick === true) {
+          cxtMenuEventActivator = 'tap';
+        }
 
         if(coreAsWell) {
-          cy.on('cxttap', cxtCoreFcn = function(event) {
+          cy.on(cxtMenuEventActivator, cxtCoreFcn = function(event) {
             var target = event.target || event.cyTarget;
             if( target != cy ) {
               return;
@@ -171,7 +176,7 @@
         }
 
         if(selector) {
-          cy.on('cxttap', selector, cxtfcn = function(event) {
+          cy.on(cxtMenuEventActivator, selector, cxtfcn = function(event) {
             _cxtfcn(event);
           });
         }
@@ -272,9 +277,9 @@
 
         var $menuItemComponent = $(itemStr);
 
-        $menuItemComponent.data('selector', item.selector); 
+        $menuItemComponent.data('selector', item.selector);
         $menuItemComponent.data('on-click-function', item.onClickFunction);
-        $menuItemComponent.data('show', (typeof(item.show) === 'undefined' || item.show));  
+        $menuItemComponent.data('show', (typeof(item.show) === 'undefined' || item.show));
         return $menuItemComponent;
       }
 
@@ -461,7 +466,7 @@
         bindCyEvents();
         preventDefaultContextTap();
       }
-      
+
       return getInstance(this);
     });
   };
